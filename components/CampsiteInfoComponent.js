@@ -67,6 +67,7 @@ function RenderComments({ comments }) {
                     style={{ alignItems: 'flex-start', paddingVertical: '5%' }}
                     readonly
                 />
+                <Text style={{ fontSize: 12 }}>{`-- ${item.author}, ${item.date}`}</Text>
             </View>
         );
     };
@@ -195,6 +196,7 @@ class CampsiteInfo extends Component {
 const styles = StyleSheet.create({
     cardRow: {
         alignItems: 'center',
+        justifyContent: 'center',
         flex: 1,
         flexDirection: 'row',
         margin: 20

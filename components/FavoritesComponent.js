@@ -1,30 +1,29 @@
-import React, { Component } from 'react';
-import { FlatList, View, Text, StyleSheet, Alert } from 'react-native';
-import { ListItem } from 'react-native-elements';
-import { connect } from 'react-redux';
-import { Loading } from './LoadingComponent';
-import { baseUrl } from '../shared/baseUrl';
-import { SwipeRow } from 'react-native-swipe-list-view';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { deleteFavorite } from '../redux/ActionCreators';
-import * as Animatable from 'react-native-animatable';
+import React, { Component } from "react";
+import { FlatList, View, Text, StyleSheet, Alert } from "react-native";
+import { SwipeRow } from "react-native-swipe-list-view";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { deleteFavorite } from "../redux/ActionCreators";
+import { ListItem } from "react-native-elements";
+import { connect } from "react-redux";
+import { Loading } from "./LoadingComponent";
+import { baseUrl } from "../shared/baseUrl";
+import * as Animatable from "react-native-animatable";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
         campsites: state.campsites,
-        favorites: state.favorites
+        favorites: state.favorites,
     };
 };
 
 const mapDispatchToProps = {
-    deleteFavorite: campsiteId => deleteFavorite(campsiteId)
+    deleteFavorite: (campsiteId) => deleteFavorite(campsiteId),
 };
 
 class Favorites extends Component {
-
     static navigationOptions = {
-        title: 'My Favorites'
-    }
+        title: "My Favorites",
+    };
 
     render() {
         const { navigate } = this.props.navigation;
@@ -36,19 +35,19 @@ class Favorites extends Component {
                             style={styles.deleteTouchable}
                             onPress={() =>
                                 Alert.alert(
-                                    'Delete Favorite?',
-                                    'Are you sure you wish to delete the favorite campsite ' +
+                                    "Delete Favorite?",
+                                    "Are you sure you wish to delete the favorite campsite" +
                                     item.name +
-                                    '?',
+                                    "?",
                                     [
                                         {
-                                            text: 'Cancel',
-                                            onPress: () => console.log(item.name + 'Not Deleted'),
-                                            style: 'cancel'
+                                            text: "Cancel",
+                                            onPress: () => console.log(item.name + "Not Deleted"),
+                                            style: "cance",
                                         },
                                         {
-                                            text: 'OK',
-                                            onPress: () => this.props.deleteFavorite(item.id)
+                                            text: "OK",
+                                            onPress: () => this.props.deleteFavorite(item.id),
                                         },
                                     ],
                                     { cancelable: false }
@@ -58,19 +57,17 @@ class Favorites extends Component {
                             <Text style={styles.deleteText}>Delete</Text>
                         </TouchableOpacity>
                     </View>
-
                     <View>
                         <ListItem
                             title={item.name}
                             subtitle={item.description}
                             leftAvatar={{ source: { uri: baseUrl + item.image } }}
-                            onPress={() => navigate('CampsiteInfo', { campsiteId: item.id })}
+                            onPress={() => navigate("CampsiteInfo", { campsiteId: item.id })}
                         />
                     </View>
                 </SwipeRow>
             );
         };
-
 
         if (this.props.campsites.isLoading) {
             return <Loading />;
@@ -82,15 +79,16 @@ class Favorites extends Component {
                 </View>
             );
         }
+
         return (
             <Animatable.View animation="fadeInRightBig" duration={2000}>
-                 <FlatList
-                    data={this.props.campsites.campsites.filter(
-                        campsite => this.props.favorites.includes(campsite.id)
+                <FlatList
+                    data={this.props.campsites.campsites.filter((campsite) =>
+                        this.props.favorites.includes(campsite.id)
                     )}
                     renderItem={renderFavoriteItem}
-                    keyExtractor={item => item.id.toString()}
-                 />
+                    keyExtractor={(item) => item.id.toString()}
+                />
             </Animatable.View>
         );
     }
@@ -98,23 +96,23 @@ class Favorites extends Component {
 
 const styles = StyleSheet.create({
     deleteView: {
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        flex: 1
+        flexDirection: "row",
+        justifyContent: "flex-end",
+        alignItems: "center",
+        flex: 1,
     },
     deleteTouchable: {
-        backgroundColor: 'red',
-        height: '100%',
-        justifyContent: 'center'
+        backgroundColor: "red",
+        height: "100%",
+        justifyContent: "center",
     },
     deleteText: {
-        color: 'white',
-        fontWeight: '700',
-        textAlign: 'center',
+        color: "white",
+        fontWeight: "700",
+        textAlign: "center",
         fontSize: 16,
-        width: 100
-    }
+        width: 100,
+    },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Favorites)
+export default connect(mapStateToProps, mapDispatchToProps)(Favorites);

@@ -1,9 +1,7 @@
-import React, { Component } from 'react';
-import {
-    Text, View, ScrollView, StyleSheet,
-    Picker, Switch, Button, Modal
-} from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import React, { Component } from "react";
+import { Text, View, ScrollView, StyleSheet, Picker, Switch, Button, Modal } from "react-native";
+// import { Picker } from "@react-native-picker/picker";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 class Reservation extends Component {
 
@@ -100,28 +98,22 @@ class Reservation extends Component {
                     />
                 </View>
                 <Modal
-                    animationType={'slide'}
+                    animationType={"slide"}
                     transparent={false}
                     visible={this.state.showModal}
                     onRequestClose={() => this.toggleModal()}
                 >
                     <View style={styles.modal}>
                         <Text style={styles.modalTitle}>Search Campsite Reservations</Text>
-                        <Text style={styles.modalText}>
-                            Number of Campers: {this.state.campers}
-                        </Text>
-                        <Text style={styles.modalText}>
-                            Hike-In?: {this.state.hikeIn ? 'Yes' : 'No'}
-                        </Text>
-                        <Text style={styles.modalText}>
-                            Date: {this.state.date.toLocaleDateString('en-US')}
-                        </Text>
+                        <Text style={styles.modalText}>Number of Campers: {this.state.campers}</Text>
+                        <Text style={styles.modalText}>Hike-In?: {this.state.hikeIn ? 'Yes' : 'No'}</Text>
+                        <Text style={styles.modalText}>Date: {this.state.date.toLocaleDateString('en-US')}</Text>
                         <Button
                             onPress={() => {
                                 this.toggleModal();
                                 this.resetForm();
                             }}
-                            color='#5637DD'
+                            color='#5637dd'
                             title='Close'
                         />
                     </View>
@@ -137,7 +129,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         flex: 1,
         flexDirection: 'row',
-        margin: 20
+        marginLeft: 20,
+        marginBottom: 20,
+        marginRight: 20,
+        marginTop: 0
     },
     formLabel: {
         fontSize: 18,
@@ -156,13 +151,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#5637DD',
         textAlign: 'center',
         color: '#fff',
+        marginTop: 20,
         marginBottom: 20
     },
     modalText: {
         fontSize: 18,
         margin: 10
     }
-
 });
 
 export default Reservation;

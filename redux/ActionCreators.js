@@ -1,5 +1,6 @@
 import * as ActionTypes from './ActionTypes';
 import { baseUrl } from '../shared/baseUrl';
+import { connect } from 'react-redux';
 
 export const fetchComments = () => dispatch => {
     return fetch(baseUrl + 'comments')
@@ -158,7 +159,7 @@ export const postComment = (campsiteId, rating, author, text) => dispatch => {
         campsiteId,
         rating,
         author,
-        text
+        text,
     };
     newComment.date = new Date().toISOString();
 
@@ -167,9 +168,9 @@ export const postComment = (campsiteId, rating, author, text) => dispatch => {
     }, 2000);
 };
 
-export const addComment = newComment => ({
+export const addComment = comment => ({
     type: ActionTypes.ADD_COMMENT,
-    payload: newComment
+    payload: comment
 });
 
 export const deleteFavorite = campsiteId => ({

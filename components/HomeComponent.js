@@ -1,37 +1,35 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import { View, Text, Animated } from 'react-native';
-import { Card } from 'react-native-elements';
-import { connect } from 'react-redux';
-import { baseUrl } from '../shared/baseUrl';
-import Loading from './LoadingComponent';
+import { Card } from "react-native-elements";
+import { connect } from "react-redux";
+import { baseUrl } from "../shared/baseUrl";
+import Loading from "./LoadingComponent";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
         campsites: state.campsites,
         promotions: state.promotions,
-        partners: state.partners
+        partners: state.partners,
     };
 };
 
 function RenderItem(props) {
-    const {item} = props;
+    const { item } = props;
 
     if (props.isLoading) {
-        return <Loading/>;
+        return <Loading />;
     }
     if (props.errMess) {
         return (
-            <View>{props.errMess}</View>
+            <View>
+                <Text>{props.errMess}</Text>
+            </View>
         );
     }
     if (item) {
         return (
-            <Card
-                featuredTitle={item.name}
-                image={{ uri: baseUrl + item.image }}>
-                <Text style={{ margin: 10 }}>
-                    {item.description}
-                </Text>
+            <Card featuredTitle={item.name} image={{ uri: baseUrl + item.image }}>
+                <Text style={{ margin: 10 }}>{item.description}</Text>
             </Card>
         );
     }

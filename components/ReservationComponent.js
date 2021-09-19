@@ -10,6 +10,7 @@ import {
     Alert
 } from "react-native";
 import * as Animatable from 'react-native-animatable';
+import * as Notifications from 'expo-notifications';
 import DateTimePicker from "@react-native-community/datetimepicker";
 // import { Picker } from "@react-native-picker/picker";
 
@@ -47,7 +48,13 @@ class Reservation extends Component {
                     onPress: () => console.log("Cancel Pressed"),
                     style: "cancel"
                 },
-                { text: "OK", onPress: () => console.log("OK Pressed") }
+                {
+                    text: 'OK',
+                    onPress: () => {
+                        this.presentLocalNotification(this.state.date.toLocaleDateString('en-US'));
+                        this.resetForm();
+                    }
+                }
             ],
             { cancelable: false }
         );
@@ -61,6 +68,32 @@ class Reservation extends Component {
             showCalendar: false,
             showModal: false
         });
+    }
+
+    async presentLocalNotification(date) {
+        function sendNotification() {
+            Notifications.setNotificationHandler({
+                handleNotification: async () => ({
+                    shouldShowAlert: true
+                })
+            });
+
+            Notifications.scheduleNotificationAsync({
+                content: {
+                    title: 'Your Campsite Reservation Search',
+                    body: `Search for ${date} requested`
+                },
+                trigger: null
+            });
+        }
+
+        let permissions = await Notifications.getPermissionsAsync();
+        if (!permissions.granted) {
+            permissions = await Notifications.requestPermissionsAsync();
+        }
+        if (permissions.granted) {
+            sendNotification();
+        }
     }
 
     render() {

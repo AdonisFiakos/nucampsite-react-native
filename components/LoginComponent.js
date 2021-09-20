@@ -1,11 +1,14 @@
+
 import React, { Component } from 'react';
 import { View, StyleSheet, ScrollView, Image } from 'react-native';
 import { Input, CheckBox, Button, Icon } from 'react-native-elements';
 import * as SecureStore from 'expo-secure-store';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
-import { createBottomTabNavigator } from 'react-navigation-tabs';
+import { createBottomTabNavigator } from 'react-navigation';
 import { baseUrl } from '../shared/baseUrl';
+import * as ImageManipulator from "expo-image-manipulator";
+import * as MediaLibrary from 'expo-media-library';
 
 class LoginTab extends Component {
 
@@ -33,17 +36,12 @@ class LoginTab extends Component {
     handleLogin() {
         console.log(JSON.stringify(this.state));
         if (this.state.remember) {
-            SecureStore.setItemAsync(
-                'userinfo',
-                JSON.stringify({
-                    username: this.state.username,
-                    password: this.state.password
-                })
-            ).catch(error => console.log('Could not save user info', error));
+            SecureStore.setItemAsync('userinfo', JSON.stringify(
+                { username: this.state.username, password: this.state.password }))
+                .catch(error => console.log('Could not save user info', error));
         } else {
-            SecureStore.deleteItemAsync('userinfo').catch(
-                error => console.log('Could not delete user info', error)
-            );
+            SecureStore.deleteItemAsync('userinfo')
+                .catch(error => console.log('Could not delete user info', error));
         }
     }
 
@@ -68,7 +66,7 @@ class LoginTab extends Component {
                     onChangeText={username => this.setState({ username })}
                     value={this.state.username}
                     containerStyle={styles.formInput}
-                    leftIconContainerStyle={styles.formIcon}
+                    leftIconContainerStyle={styles.formInput}
                 />
                 <Input
                     placeholder='Password'
@@ -76,7 +74,7 @@ class LoginTab extends Component {
                     onChangeText={password => this.setState({ password })}
                     value={this.state.password}
                     containerStyle={styles.formInput}
-                    leftIconContainerStyle={styles.formIcon}
+                    leftIconContainerStyle={styles.formInput}
                 />
                 <CheckBox
                     title='Remember Me'
@@ -159,9 +157,40 @@ class RegisterTab extends Component {
             });
             if (!capturedImage.cancelled) {
                 console.log(capturedImage);
-                this.setState({ imageUrl: capturedImage.uri });
+                this.processImage(capturedImage.uri);
+                this.saveImageToGallery(capturedImage.uri);
             }
         }
+    }
+
+    processImage = async (imgUri) => {
+        const processedImage = await ImageManipulator.manipulateAsync(
+            imgUri,
+            [{ resize: { width: 400 } }],
+            { compress: 1, format: ImageManipulator.SaveFormat.PNG }
+        );
+        console.log(processedImage);
+        this.setState({ imageUrl: processedImage.uri });
+    }
+
+    getImageFromGallery = async () => {
+        const cameraRollPermission = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+
+        if (cameraRollPermission.status === 'granted') {
+            const capturedImage = await ImagePicker.launchImageLibraryAsync({
+                allowsEditing: true,
+                aspect: [1, 1]
+            });
+            if (!capturedImage.cancelled) {
+                console.log(capturedImage);
+                this.processImage(capturedImage.uri);
+            }
+        }
+    }
+
+    saveImageToGallery = async (imgUri) => {
+        const saveMedia = await MediaLibrary.saveToLibraryAsync(imgUri);
+        this.setState({ imageUrl: saveMedia.uri });
     }
 
     handleRegister() {
@@ -171,9 +200,8 @@ class RegisterTab extends Component {
                 { username: this.state.username, password: this.state.password }))
                 .catch(error => console.log('Could not save user info', error));
         } else {
-            SecureStore.deleteItemAsync('userinfo').catch(
-                error => console.log('Could not delete user info', error)
-            );
+            SecureStore.deleteItemAsync('userinfo')
+                .catch(error => console.log('Could not delete user info', error));
         }
     }
 
@@ -191,6 +219,10 @@ class RegisterTab extends Component {
                             title='Camera'
                             onPress={this.getImageFromCamera}
                         />
+                        <Button
+                            title='Gallery'
+                            onPress={this.getImageFromGallery}
+                        />
                     </View>
                     <Input
                         placeholder='Username'
@@ -198,7 +230,7 @@ class RegisterTab extends Component {
                         onChangeText={username => this.setState({ username })}
                         value={this.state.username}
                         containerStyle={styles.formInput}
-                        leftIconContainerStyle={styles.formIcon}
+                        leftIconContainerStyle={styles.formInput}
                     />
                     <Input
                         placeholder='Password'
@@ -206,7 +238,7 @@ class RegisterTab extends Component {
                         onChangeText={password => this.setState({ password })}
                         value={this.state.password}
                         containerStyle={styles.formInput}
-                        leftIconContainerStyle={styles.formIcon}
+                        leftIconContainerStyle={styles.formInput}
                     />
                     <Input
                         placeholder='First Name'
@@ -214,7 +246,7 @@ class RegisterTab extends Component {
                         onChangeText={firstname => this.setState({ firstname })}
                         value={this.state.firstname}
                         containerStyle={styles.formInput}
-                        leftIconContainerStyle={styles.formIcon}
+                        leftIconContainerStyle={styles.formInput}
                     />
                     <Input
                         placeholder='Last Name'
@@ -222,7 +254,7 @@ class RegisterTab extends Component {
                         onChangeText={lastname => this.setState({ lastname })}
                         value={this.state.lastname}
                         containerStyle={styles.formInput}
-                        leftIconContainerStyle={styles.formIcon}
+                        leftIconContainerStyle={styles.formInput}
                     />
                     <Input
                         placeholder='Email'
@@ -230,7 +262,7 @@ class RegisterTab extends Component {
                         onChangeText={email => this.setState({ email })}
                         value={this.state.email}
                         containerStyle={styles.formInput}
-                        leftIconContainerStyle={styles.formIcon}
+                        leftIconContainerStyle={styles.formInput}
                     />
                     <CheckBox
                         title='Remember Me'
